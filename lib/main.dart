@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       home: new HomeScreen(),
       theme: ThemeData(fontFamily: 'Roboto'),
-
+      debugShowCheckedModeBanner: false,
     );
   }
 }

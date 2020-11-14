@@ -14,21 +14,30 @@ class HomeScreen extends StatefulWidget{
 
 class _HomeScreenState extends State<HomeScreen>{
 
+  Color blue = Color.fromARGB(255, 3, 169, 244);
+
   TextEditingController textController = new TextEditingController();
 
   Course courseData = new Course();
+
+  bool loading = false;
 
 
 
   _onPressSearch() async{
 
-
+    setState(() {
+      loading = true;
+    });
     String courseId = textController.text;
     print(courseId);
 
 
     courseData = await getCourse(courseId);
 
+    setState(() {
+      loading = false;
+    });
     if(courseData == null){
       _showDialog("We couldn't find a course with the ID "+courseId);
     }else{
@@ -51,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen>{
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 3, 169, 244),
+        backgroundColor: blue,
       ),
       body: Padding(
           padding: EdgeInsets.all(12),
@@ -70,12 +79,12 @@ class _HomeScreenState extends State<HomeScreen>{
             ),
             RaisedButton(
               onPressed: _onPressSearch,
-              color: Colors.redAccent,
+              color: loading?blue:Colors.redAccent,
               textColor: Colors.white,
               child: Container(
                 width: double.infinity,
                 child: Text(
-                  "SEARCH",
+                  loading?"LOADING...":"SEARCH",
                   textAlign: TextAlign.center,
                   style: new TextStyle(
                     fontWeight: FontWeight.bold,
