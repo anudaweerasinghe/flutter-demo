@@ -4,12 +4,14 @@ class Course{
   List<dynamic> prereqs;
   String desc;
   String department;
+  String courseID;
 
   Course({
     this.name,
     this.prereqs,
     this.desc,
-    this.department
+    this.department,
+    this.courseID
   });
 
   factory Course.fromJson(Map<String, dynamic> json){
@@ -17,7 +19,8 @@ class Course{
       name: json['name'],
       prereqs: json['prereqs'],
       desc: json['desc'],
-      department: json['department']
+      department: json['department'],
+      courseID: json['courseID']
     );
   }
 

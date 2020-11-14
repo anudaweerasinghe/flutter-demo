@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'course_model.dart';
 import 'dart:async';
 import 'api.dart';
+import 'course_screen.dart';
 
 
 class HomeScreen extends StatefulWidget{
@@ -18,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen>{
   Course courseData = new Course();
 
 
-  bool dataLoaded = false;
 
   _onPressSearch() async{
 
@@ -29,9 +29,14 @@ class _HomeScreenState extends State<HomeScreen>{
 
     courseData = await getCourse(courseId);
 
-    setState(() {
-      dataLoaded = true;
-    });
+    if(courseData == null){
+      _showDialog("We couldn't find a course with the ID "+courseId);
+    }else{
+      Navigator.push(
+        context,
+        new MaterialPageRoute(builder: (ctxt) => new CourseScreen(courseData: courseData)),
+      );
+    }
   }
 
 
@@ -50,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen>{
       ),
       body: Padding(
           padding: EdgeInsets.all(12),
-        child: ListView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
                 keyboardType: TextInputType.number,
@@ -81,53 +87,33 @@ class _HomeScreenState extends State<HomeScreen>{
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
             ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14)
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Text(
-                      dataLoaded?courseData.name:"",
-                      textAlign: TextAlign.left,
-                      style: new TextStyle(
-                          fontWeight: FontWeight.bold,
-                        fontSize: 18
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-                    ),
-                    Text(
-                        dataLoaded?courseData.department:"",
-                      style: new TextStyle(
-                          fontWeight: FontWeight.w500,
-                        fontStyle: FontStyle.italic
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                    ),
-                    Text(
-                      "Prerequisites: "+ (dataLoaded?courseData.prereqs.toString():"")
-                    ),
-
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                    ),
-                    Text(
-                        dataLoaded?courseData.desc:""
-                    )
-                  ],
-                ),
-              ),
-            )
           ],
         ),
       )
+    );
+  }
+
+  void _showDialog(String response) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Course Not found"),
+          content: new Text(response),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("OK", style: new TextStyle(color: Colors.white),),
+              color: new Color.fromARGB(255, 255, 75, 43),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
